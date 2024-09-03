@@ -1,40 +1,39 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import {
   FieldValues,
   SubmitHandler,
   useForm,
-  FormState,
+  Controller
 } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   // Destructure the register and handleSubmit methods from useForm
-  const { register, handleSubmit, formState, setError } = useForm({
+  const { register, handleSubmit, formState, setError, control } = useForm({
     mode: "onChange",
   });
 
   const { isSubmitting, errors, isValid, isSubmitSuccessful } = formState;
 
-  console.log(isSubmitSuccessful);
 
-  console.log("c'est valide ou non ? : ", isValid);
+
+
 
   const [formSubmittedSuccessfully, setFormSubmittedSuccessfully] =
     useState(false);
 
   // Update the handleSubmit function to accept form data
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(formState);
+    console.log(data);
     await new Promise<void>((resolve) =>
       setTimeout(() => {
         alert("c'est arrivé");
         resolve();
       }, 2000)
     );
-    /*setError("username", {
-      type: "manual",
-      message: "il est interdit de s'appeler prout",
-    });*/
+
   };
 
   useEffect(() => {
@@ -80,6 +79,23 @@ function App() {
             name="password"
           />
           {errors.password && <span>{errors.password.message}</span>}
+
+          {/* Correctly configure the Controller for DatePicker */}
+          <Controller
+          
+            control={control}
+            name="date" // Specify the name for the field
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <DatePicker
+                selected={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={ref}
+                placeholderText="Select a date"
+              />
+            )}
+          />
+          {errors.date && <span>{errors.date.message}</span>}
 
           <button disabled={!isValid} className="button" type="submit">
             S'inscrire
